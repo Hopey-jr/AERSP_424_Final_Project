@@ -21,7 +21,7 @@
 #include "EOM_function.hpp"
 #include "ECI2Rotating_Frame_Coord_Transformation.hpp"
 #include "PseudoInverse.hpp"
-
+//#include "Hits_Moon_Check.hpp"
 
 
 // Function declaration

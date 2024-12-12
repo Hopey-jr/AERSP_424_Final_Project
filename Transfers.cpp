@@ -25,8 +25,9 @@
 #include <complex>
 #include <numbers>
 #include <utility>
+#include <thread>
 
-
+//#include "Hits_Moon_Check.hpp"
 #include "DeltaV_TOF_Initial_Guess.hpp"
 #include "Manifold_Negative.hpp"
 #include "Manifold_Positive.hpp"
@@ -39,6 +40,8 @@
 #include "ECI2Rotating_Frame_Coord_Transformation.hpp"
 #include "PseudoInverse.hpp"
 #include "Final_Outputs.hpp"
+//#include "Proccessing_Negative_Manifold.hpp"
+//#include "Proccessing_Positive_Manifold.hpp"
 
 
 
@@ -95,8 +98,60 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
     std::vector<double> Initial_Conditions = arrival_orbit.Initial_Conditions;
     Tp = arrival_orbit.Tp;
     std::vector<double> ICs(6);
+    
+    
+    /*
+    std::vector<std::vector<double>> stable_negative_state(number_of_manifolds, std::vector<double>(7, 100));
+        std::vector<std::vector<double>> stable_positive_state(number_of_manifolds, std::vector<double>(7, 100));
+    
+    
+    auto arrays_neg = Generate_Negative_Manifolds( Initial_Conditions,  Tp,  mu,  number_of_manifolds);
+    auto arrays_pos = Generate_Positive_Manifolds( Initial_Conditions,  Tp,  mu,  number_of_manifolds);
+    std::vector<std::vector<double>> ICs_Stable_Negative = arrays_neg.first;
+    std::vector<std::vector<double>> ICs_Unstable_Negative = arrays_neg.second;
+    std::vector<std::vector<double>> ICs_Stable_Positive = arrays_pos.first;
+    std::vector<std::vector<double>> ICs_Unstable_Positive = arrays_pos.second;
+    double poincare_section_x = -mu;
+        int hit_poincare_section = 0;
+
+        // Split the work into multiple threads for negative and positive manifolds
+        int num_threads = std::thread::hardware_concurrency(); // Use available hardware threads
+        int chunk_size_neg = ICs_Stable_Negative.size() / num_threads;
+        int chunk_size_pos = ICs_Stable_Positive.size() / num_threads;
+        
+        std::vector<std::thread> threads;
+
+        // Create threads for processing the negative manifold
+        for (int i = 0; i < num_threads; ++i) {
+            int start_index = i * chunk_size_neg;
+            int end_index = (i + 1) * chunk_size_neg;
+            if (i == num_threads - 1) end_index = ICs_Stable_Negative.size(); // Handle remainder
+            threads.push_back(std::thread(process_negative_manifold, start_index, end_index, std::ref(ICs_Stable_Negative),
+                                          mu, poincare_section_x, std::ref(stable_negative_state), std::ref(hit_poincare_section)));
+        }
+
+        // Create threads for processing the positive manifold
+        for (int i = 0; i < num_threads; ++i) {
+            int start_index = i * chunk_size_pos;
+            int end_index = (i + 1) * chunk_size_pos;
+            if (i == num_threads - 1) end_index = ICs_Stable_Positive.size(); // Handle remainder
+            threads.push_back(std::thread(process_positive_manifold, start_index, end_index, std::ref(ICs_Stable_Positive),
+                                          mu, poincare_section_x, std::ref(stable_positive_state), std::ref(hit_poincare_section)));
+        }
+
+        // Join all threads
+        for (auto& t : threads) {
+            t.join();
+        }
+    
+    
+    std::vector<std::vector<double>> stable_manifold;
+*/
+    
     double stable_negative_state[number_of_manifolds][7] = {100};
     double stable_positive_state[number_of_manifolds][7] = {100};
+    
+        
     std::vector<std::vector<double>> stable_manifold;
     
     double poincare_section_x = -mu;
@@ -168,7 +223,12 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
         double percent = number_of_positive_IC/150.*100.0;
         cout << "The positive portion of the manifold is: " << percent <<"% finished" << endl;
     }
+     
+     
+    //]
     
+    
+    //[ Finding which manifold (positive or negative) ends closer to the Earth
     double y_pos_min = 101;
     double y_neg_min = 101;
     for( int i = 0; i < number_of_manifolds; ++i){
@@ -200,6 +260,7 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
                     stable_negative_state[number_of_stable_manifolds][5],
                     stable_negative_state[number_of_stable_manifolds][6]
                 });
+                T2.push_back(stable_positive_state[number_of_stable_manifolds][6]*hour);
                 number_of_manifolds_at_poincare = number_of_manifolds_at_poincare+1;
             }
         }
@@ -217,14 +278,41 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
                     stable_positive_state[number_of_stable_manifolds][5],
                     stable_positive_state[number_of_stable_manifolds][6]
                 });
+                T2.push_back(stable_positive_state[number_of_stable_manifolds][6]*hour);
                 number_of_manifolds_at_poincare = number_of_manifolds_at_poincare+1;
                 
             }
         }
     }
-    //]
     
+    
+    
+    //]
     //[ Finding if any branches of the manifold intersect with the moon
+/*
+        int number_of_hits = 0;
+    size_t num_threads = std::thread::hardware_concurrency();
+        size_t chunk_size = stable_manifold.size() / num_threads;
+
+        std::vector<std::thread> threads;
+
+        // Launch threads
+        for (size_t t = 0; t < num_threads; ++t) {
+            size_t start = t * chunk_size;
+            size_t end = (t == num_threads - 1) ? stable_manifold.size() : start + chunk_size;
+
+            threads.emplace_back(Check_If_Hits_Moon, std::cref(stable_manifold),
+                                 std::ref(hits_moon), std::ref(number_of_hits),
+                                 start, end, abs_err, rel_err, LU, mu);
+        }
+
+        // Join threads
+        for (auto& thread : threads) {
+            thread.join();
+        }
+    */
+    
+    
     double dt;
     double distance_moon;
     int number_of_hits = 0;
@@ -248,7 +336,7 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
         
         integrate_times(make_controlled(abs_err, rel_err, error_stepper_type()), state_prop, w, times_vector.begin(),times_vector.end(), dt, push_back_state_and_time(w_vec, times));
         
-      T2.push_back(TOF*hour);
+     
         for( int moon_test = 0; moon_test <w_vec.size(); ++moon_test){
             distance_moon = pow(pow((w_vec[moon_test][0]-(1.0-mu)),2.0)+pow(w_vec[moon_test][1],2.0)+pow(w_vec[moon_test][2],2.0),0.5);
             
@@ -260,6 +348,7 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
             
         }
     }
+     
     //]
     
     
