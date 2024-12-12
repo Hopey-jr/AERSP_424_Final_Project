@@ -93,14 +93,14 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
     typedef runge_kutta_cash_karp54<state_type> error_stepper_type;
     //]
     
-    
+    ///////////PROBLEM SECTION/////////////////
     //[ Finding the stable manifold
     std::vector<double> Initial_Conditions = arrival_orbit.Initial_Conditions;
     Tp = arrival_orbit.Tp;
     std::vector<double> ICs(6);
     
     
-    /*
+    
     std::vector<std::vector<double>> stable_negative_state(number_of_manifolds, std::vector<double>(7, 100));
         std::vector<std::vector<double>> stable_positive_state(number_of_manifolds, std::vector<double>(7, 100));
     
@@ -146,8 +146,8 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
     
     
     std::vector<std::vector<double>> stable_manifold;
-*/
-    
+
+    /*
     double stable_negative_state[number_of_manifolds][7] = {100};
     double stable_positive_state[number_of_manifolds][7] = {100};
     
@@ -224,7 +224,7 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
         cout << "The positive portion of the manifold is: " << percent <<"% finished" << endl;
     }
      
-     
+     */
     //]
     
     
@@ -288,8 +288,10 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
     
     
     //]
+
+        ///////////PROBLEM SECTION/////////////////
     //[ Finding if any branches of the manifold intersect with the moon
-/*
+
         int number_of_hits = 0;
     size_t num_threads = std::thread::hardware_concurrency();
         size_t chunk_size = stable_manifold.size() / num_threads;
@@ -310,9 +312,9 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
         for (auto& thread : threads) {
             thread.join();
         }
-    */
     
     
+    /*
     double dt;
     double distance_moon;
     int number_of_hits = 0;
@@ -348,7 +350,7 @@ void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit){
             
         }
     }
-     
+     */
     //]
     
     
