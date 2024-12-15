@@ -104,7 +104,7 @@ string Logger::levelToString(LogLevel level)
     case HIT_POINCARE:
         return "Number of branches that reached the poincare section at  ";
     case HIT_MOON:
-        return "Number of branches that didn't hit the Moon: ";
+        return "Number of branches that hit the Moon: ";
     case POS_VS_NEG:
         return ""; // You may want to output specific data here
     case MEASUREMENTS:
