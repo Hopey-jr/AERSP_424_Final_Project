@@ -1,9 +1,3 @@
-//
-//  Transfers.cpp
-//  Final_Project_V2
-//
-//  Created by jonathon hope on 12/10/24.
-//
 #include "Transfers.hpp"
 
 #include <iostream>
@@ -26,6 +20,7 @@
 #include <utility>
 #include <thread>
 #include <matplot/matplot.h>
+#include <string>
 
 #include "Orbit_Plot.hpp"
 #include "DeltaV_TOF_Initial_Guess.hpp"
@@ -50,7 +45,7 @@
 
 
 
-void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit, Logger *logger){
+void Create_Transfers(IOD& state1, Arrival_Orbit& arrival_orbit, Logger *logger,std::string Outputfile_Path){
 
     //[ Definitions and constants
     using namespace matplot;
@@ -721,7 +716,7 @@ for(int i = 0; i < stable_manifold.size(); ++i){
                     if(std::sqrt(pow(delta_vx.back(),2)+pow(delta_vy.back(),2)+pow(delta_vz.back(),2)) < 10 ){
                         
                         
-                        Create_Outputs( state1, arrival_orbit,  LU,  TU,  mu, x_departure.back(), y_departure.back(), z_departure.back(), xdot_departure.back(), ydot_departure.back(), zdot_departure.back(), T1.back(), delta_vx.back(), delta_vy.back(), delta_vz.back(), T2_elapsed.back(), PrintMetaData);
+                        Create_Outputs( state1, arrival_orbit,  LU,  TU,  mu, x_departure.back(), y_departure.back(), z_departure.back(), xdot_departure.back(), ydot_departure.back(), zdot_departure.back(), T1.back(), delta_vx.back(), delta_vy.back(), delta_vz.back(), T2_elapsed.back(), PrintMetaData, Outputfile_Path);
                         PrintMetaData = 0;
                         
                         std::vector< state_type > transfer_state = Recreate_Transfer( state1,  arrival_orbit,  LU,  TU,  mu,  x_departure.back(),  y_departure.back(),  z_departure.back(),  xdot_departure.back(),  ydot_departure.back(),  zdot_departure.back(),  T1.back(),  delta_vx.back(),  delta_vy.back(),  delta_vz.back(), T2_elapsed.back());
@@ -806,8 +801,7 @@ for(int i = 0; i < stable_manifold.size(); ++i){
     plot_position( x_vectors_all, y_vectors_all, z_vectors_all);
     
     
-    show();
-    save("figure", "jpeg");
+    
     //]
     
 } //end
