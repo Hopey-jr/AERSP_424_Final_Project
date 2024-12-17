@@ -1,9 +1,9 @@
 # AERSP_424_Final_Project
-NOTE: Although the code will work for any arrival orbit in the catalog, there is no guarantee that any orbit will result in a transfer... 
+NOTE FOR ANY GRADERS: Although the code will work for any arrival orbit in the catalog, there is no guarantee that any orbit will result in successfull transfers within the bounds of the problem. If any grader wants to test the full extent of the project, the following inputs will result in transfers that are catalogued and visualized: Measurement input = 1 | Orbit_Type = LYAPUNOV_L1 | Orbit_Number = 40. Warning: The runtime for these conditions is about XXX minutes...
 
 
 Description:
-This final project combined initial orbit determination, transfer design, and visualization
+This purpose of this function is to design transfers from a spacecraft in a Earth-bound orbit to a Cislunar orbit around the L1 and L2 points. The function will begin by prompting the user for the following inputs: file name for the catalog output; measurement number based on the... 
 
 
 
@@ -13,20 +13,28 @@ Main Function:
 The Main function will prompt the user to input the measurements and their choice of arrival orbit. This function will utilize classes to store the data. It will also call the function to generate the transfers
 
 IOD Function class:
+  This class will take the user input of the measurement set and create an object with the position and velocity of the spacecraft as the attributes.
+  
   IOD_Measurement Function:
-  Collecting the terms from the user for the initial spacecraft measurements. For simplicity, the measurements are stored in text files and the user can specify which measurements   they want. The 
+  Collecting the terms from the user for the initial spacecraft measurements. For simplicity, the measurements are stored in text files and the user can specify which measurements   they want. The attributes of azimuth, elevation, position of the viewing site, and time of the viewing will be attached to an object within this class.
+  
   Gauss Function:
   This function will intake the measurements to solve for a distance to the spacecraft along with additional terms needed for the rest of the calculations. This function will also   need an additional Root_Finding function
+  
   Root_Finding Function (Used online sources to help since the Boost and Eigen built-in functions didn’t work): 
-  This function will be used to solve for the real positive root of the octic polynomial function
+  This function utilizes Newton-Raphson iterations to solve for the real positive root of the octic polynomial function
+  
   Position Function: 
   This function will find the position vectors of all three measurements
+  
   Gibbs Functions:
   This function will find the velocity that corresponds to one of the position vectors.
 
-Arrival_Orbit class
-Takes the input of the orbit type and orbit number from the catalog and finds the initial conditions and orbital period for the chosen orbit
+Arrival_Orbit class:
+Takes the input of the orbit type and orbit number from the catalog and finds the initial conditions and orbital period for the chosen orbit and sets these attributes to an object
+
 Transfer Function
+ ...
  
 Generating Manifold Initial Conditions Function:
 This function will generate the initial conditions for the manifold. The use of threads will be partially helpful here since the function uses a For Loop where they are not dependent on each other
