@@ -82,7 +82,7 @@ The purpose of this function is to recreate the transfer based on the initial co
 The purpose of this function is to output the catalog data to both the terminal and txt file at every converged solution. It will also output the metadata to the catalog after the first converged solutions
 
 --Plotting_Earth_Moon_Rotating:
-The purpose of this function is to transfer the Earth and Moon from the ECI to the rotating frame and plot them
+The purpose of this function is to transfer the Earth and Moon from the ECI to the rotating frame and plot them. In the rotating frame (and without the axis being equal) the Earth and Moon will be slightly distorted.
 
 --Orbit_Plot:
 The purpose of this function is to plot the all the x,y, and z vectors that represent the transfers and the arrival orbit
